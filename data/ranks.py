@@ -1,10 +1,11 @@
 import sqlalchemy
 from sqlalchemy import orm
+from sqlalchemy_serializer import SerializerMixin
 
 from .db_session import SqlAlchemyBase
 
 
-class Rank(SqlAlchemyBase):
+class Rank(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'ranks'
 
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))

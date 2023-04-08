@@ -1,5 +1,6 @@
 import sqlalchemy
 from sqlalchemy import orm
+from sqlalchemy_serializer import SerializerMixin
 
 from .db_session import SqlAlchemyBase
 
@@ -24,7 +25,7 @@ assoc_black = sqlalchemy.Table(
 )
 
 
-class Game(SqlAlchemyBase):
+class Game(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'games'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)

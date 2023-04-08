@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect
 import json
-from data import db_session
+from data import db_session, tournament_resources, tournament_view, game_type_resources
 from data.users import User
 from data.classes import Class
 from data.game_types import GameType
@@ -15,7 +15,10 @@ from flask_login import LoginManager, login_user, login_required, logout_user
 from forms.login import LoginForm
 from forms.user import RegisterForm
 
+from flask_restful import reqparse, abort, Api, Resource
+
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -35,31 +38,7 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    db_sess = db_session.create_session()
-    tournaments = db_sess.query(Tournament).all()
-    print(tournaments)
-    ts = []
-    for tournament in tournaments:
-        row = []
-        row.append(f'{tournament.name}. {tournament.game_type.name}. Контроль времени {tournament.game_time}+{tournament.move_time}. Старт {tournament.start.strftime("%Y-%m-%d-%H в %M.%S")}')
-        for category in tournament.categories:
-            string_category = ''
-            if category.class_letter:
-                string_category += f'{category.class_from}{category.class_letter} класс. '
-            elif category.class_from:
-                string_category += f'{category.class_from}-{category.class_to} классы. '
-            elif category.year_from:
-                string_category += f'{category.year_from}-{category.year_to} г.р. '
-            if category.gender == 1:
-                string_category += 'Мальчики. '
-            elif category.gender == -1:
-                string_category += 'Девочки. '
-            if not string_category:
-                string_category = 'Турнир для всех.'
-            row.append(string_category)
-        ts.append(row)
-
-    return render_template("index.html", tournaments=ts, title='Турниры', alt=alt, header=header)
+    return redirect('/tournament/all')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -170,6 +149,15 @@ def main():
         category.gender = -1
         db_sess.add(category)
         db_sess.commit()
+    # для списка объектов
+    api.add_resource(tournament_resources.TournamentListResource, '/api/tournament/<filter>')
+
+    api.add_resource(game_type_resources.GameTypeListResource, '/api/gametype/')
+
+    # для одного объекта
+    api.add_resource(tournament_resources.TournamentResource, '/api/tournament/<int:tournament_id>')
+
+    app.register_blueprint(tournament_view.blueprint)
     app.run()
 
 
