@@ -21,12 +21,41 @@ CAT_SYS = ['Олимпийская', 'Круговик', 'Швейцарская
            'Швейцарская (Бухгольц усеченный, Бухгольц, Кол-во побед)']
 
 
-@blueprint.route('/tournament/') # tournament/<int:id>
+@blueprint.route('/tournament/')
 def get_tournament_redirect():
     return redirect('/tournament/all')
 
 
-@blueprint.route('/tournament/add/', methods=['GET', 'POST']) # tournament/<int:id>
+@blueprint.route('/tournament/<int:tournament_id>') # tournament/<int:id>
+def get_tournament(tournament_id):
+    tournament = get(f'http://localhost:5000/api/tournament/{tournament_id}').json()
+    tournament1 = [f'{tournament["name"]}. {tournament["game_type"]}. '
+            f'Контроль времени {tournament["game_time"]}+{tournament["move_time"]}. Старт {tournament["start"]}. ']
+    if tournament['is_finished']:
+        tournament1[0] += 'Завершен'
+    ids = [tournament["id"]]
+    for category in tournament["categories"]:
+        string_category = ''
+        if category["class_letter"]:
+            string_category += f'{category["class_from"]}{category["class_letter"]} класс. '
+        elif category["class_from"]:
+            string_category += f'{category["class_from"]}-{category["class_to"]} классы. '
+        elif category["year_from"]:
+            string_category += f'{category["year_from"]}-{category["year_to"]} г.р. '
+        if category["gender"] == 1:
+            string_category += 'Мальчики. '
+        elif category["gender"] == -1:
+            string_category += 'Девочки. '
+        if not string_category:
+            string_category = 'Турнир для всех.'
+        string_category += CAT_SYS[category['system']]
+        tournament1.append(string_category)
+        ids.append(category['id'])
+
+    return render_template("tournament.html", tournament=tournament1, ids=ids, title='Турнир', alt=alt, header=header)
+
+
+@blueprint.route('/tournament/add/', methods=['GET', 'POST'])
 @login_required
 def add_tournament():
     form = TournamentAddForm()
@@ -50,8 +79,8 @@ def add_tournament():
                            form=form, alt=alt, header=header)
 
 
-@blueprint.route('/tournament/<filter>') # tournament/<int:id>
-def get_tournament(filter):
+@blueprint.route('/tournament/<filter>')
+def get_tournament_list(filter):
     tournaments = get(f'http://localhost:5000/api/tournament/{filter}').json()
     ts = []
     ids = []
@@ -59,7 +88,7 @@ def get_tournament(filter):
         row = [f'{tournament["name"]}. {tournament["game_type"]}. '
             f'Контроль времени {tournament["game_time"]}+{tournament["move_time"]}. Старт {tournament["start"]}. ']
         if tournament['is_finished']:
-            row += 'Завершен'
+            row[0] += 'Завершен'
         row_id = [tournament["id"]]
         for category in tournament["categories"]:
             string_category = ''

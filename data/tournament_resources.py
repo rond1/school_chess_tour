@@ -16,11 +16,22 @@ def abort_if_tournaments_not_found(tournaments_id):
 
 class TournamentResource(Resource):
     def get(self, tournament_id):
+        tournament1 = {}
         abort_if_tournaments_not_found(tournament_id)
         session = db_session.create_session()
-        tournaments = session.query(Tournament).get(tournament_id)
-        return jsonify({'news': tournaments.to_dict(
-            only=('title', 'content', 'user_id', 'is_private'))})
+        tournament = session.query(Tournament).get(tournament_id)
+        tournament1['id'] = tournament.id
+        tournament1['name'] = tournament.name
+        tournament1['game_type'] = tournament.game_type.name
+        tournament1['game_time'] = tournament.game_time
+        tournament1['move_time'] = tournament.move_time
+        tournament1['start'] = tournament.start.strftime("%Y-%m-%d %H:%M")
+        tournament1['categories'] = []
+        tournament1['is_finished'] = tournament.is_finished
+        for category in tournament.categories:
+            tournament1['categories'].append(category.to_dict(
+                only=('id', 'class_from', 'class_to', 'class_letter', 'year_from', 'year_to', 'gender', 'system')))
+        return jsonify(tournament1)
 
     def delete(self, tournament_id):
         abort_if_tournaments_not_found(tournament_id)

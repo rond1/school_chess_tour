@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="col-md6 border rounded">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    {{tournament[0]}}
+                </th>
+            </tr>
+            <p>
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <a href="" class="btn btn-secondary">Изменить</a>
+            &nbsp;
+                <a href="" class="btn btn-secondary">Удалить</a>
+                {% endif %}
+            </p>
+
+        </thead>
+        <tbody>
+        {% for category in tournament[1:]%}
+            <tr>
+                <td>
+                    <a href="/cat/{{ ids[tournament.index(category)] }}">
+                        {{category}}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="/category/add/" class="btn btn-secondary">Добавить</a>
+    {% endif %}
+    {% if current_user.is_authenticated and not current_user.is_admin %}
+    <a href="" class="btn btn-secondary">Подать заявку</a>
+    {% endif %}
+</div>
+{% endblock %}
