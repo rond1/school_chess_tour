@@ -12,9 +12,9 @@
             </tr>
             <p>
                 {% if current_user.is_authenticated and current_user.is_admin %}
-                <a href="" class="btn btn-secondary">Изменить</a>
+                <a href="/tournament/{{ ids[0] }}/edit" class="btn btn-secondary">Изменить</a>
             &nbsp;
-                <a href="" class="btn btn-secondary">Удалить</a>
+                <a href="/tournament/{{ ids[0] }}/delete" class="btn btn-secondary">Удалить</a>
                 {% endif %}
             </p>
 

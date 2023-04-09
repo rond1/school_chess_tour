@@ -4,63 +4,47 @@ from flask import jsonify
 from flask_restful import abort, Resource, reqparse
 
 from data import db_session
-from data.tournaments import Tournament
+from data.categories import Category
 
 
-def abort_if_tournaments_not_found(tournament_id):
+def abort_if_tournaments_not_found(categories_id):
     session = db_session.create_session()
-    tournament = session.query(Tournament).get(tournament_id)
-    if not tournament:
-        abort(404, message=f"Tournament {tournament_id} not found")
+    categories = session.query(Category).get(categories_id)
+    if not categories:
+        abort(404, message=f"News {categories_id} not found")
 
 
 class TournamentResource(Resource):
-    def get(self, tournament_id):
-        tournament1 = {}
-        abort_if_tournaments_not_found(tournament_id)
-        session = db_session.create_session()
-        tournament = session.query(Tournament).get(tournament_id)
-        tournament1['id'] = tournament.id
-        tournament1['name'] = tournament.name
-        tournament1['game_type'] = tournament.game_type.name
-        tournament1['game_time'] = tournament.game_time
-        tournament1['move_time'] = tournament.move_time
-        tournament1['start'] = tournament.start.strftime("%Y-%m-%d %H:%M")
-        tournament1['categories'] = []
-        tournament1['is_finished'] = tournament.is_finished
-        for category in tournament.categories:
-            tournament1['categories'].append(category.to_dict(
-                only=('id', 'class_from', 'class_to', 'class_letter', 'year_from', 'year_to', 'gender', 'system')))
-        return jsonify(tournament1)
+    def get(self):
+        pass
 
-    def delete(self, tournament_id):
-        abort_if_tournaments_not_found(tournament_id)
-        session = db_session.create_session()
-        tournaments = session.query(Tournament).get(tournament_id)
-        session.delete(tournaments)
-        session.commit()
-        return jsonify({'success': 'OK'})
+    def delete(self):
+        pass
 
 
 parser = reqparse.RequestParser()
-parser.add_argument('name', required=True)
-parser.add_argument('game_type_id', required=True, type=int)
-parser.add_argument('start', required=True)
-parser.add_argument('game_time', required=True, type=int)
-parser.add_argument('move_time', required=True, type=int)
+parser.add_argument('class_letter', required=False)
+parser.add_argument('tournament_id', required=True, type=int)
+parser.add_argument('year_from', required=False, type=int)
+parser.add_argument('year_to', required=False, type=int)
+parser.add_argument('class_from', required=False, type=int)
+parser.add_argument('class_to', required=False, type=int)
+parser.add_argument('class_letter', required=False)
+parser.add_argument('gender', required=True, type=int)
+parser.add_argument('system', required=True, type=int)
 parser.add_argument('salt', required=True)
 
 
-class TournamentListResource(Resource):
-    def get(self, filter):
-        session = db_session.create_session()
+class CategoryListResource(Resource):
+    def get(self):
+        session = db_session.create__session()
         tournaments1 = []
         if filter == 'arch':
             tournaments = session.query(Tournament).filter(Tournament.is_finished == True)
         elif filter == 'active':
             tournaments = session.query(Tournament).filter(Tournament.is_finished == False)
         else:
-            tournaments = session.query(Tournament).all()
+        tournaments = session.query(Tournament).all()
         for tournament in tournaments:
             tournament1 = {}
             tournament1['id'] = tournament.id
