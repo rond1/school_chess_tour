@@ -5,12 +5,20 @@ from sqlalchemy_serializer import SerializerMixin
 from .db_session import SqlAlchemyBase
 
 
+association_table = sqlalchemy.Table(
+    'tour2user',
+    SqlAlchemyBase.metadata,
+    sqlalchemy.Column('tournament_id', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('tournaments.id')),
+    sqlalchemy.Column('user_id', sqlalchemy.Integer,
+                      sqlalchemy.ForeignKey('users.id'))
+)
+
+
 class Tournament(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'tournaments'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    game_type_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("game_types.id"))
-
     name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
 
     game_time = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
@@ -20,4 +28,5 @@ class Tournament(SqlAlchemyBase, SerializerMixin):
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
 
     categories = orm.relationship('Category', back_populates='tournament')
-    game_type = orm.relationship('GameType')
+
+    demands = orm.relationship("User", secondary="tour2user", backref="tournament_id")

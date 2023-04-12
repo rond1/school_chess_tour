@@ -5,8 +5,8 @@ from sqlalchemy_serializer import SerializerMixin
 from .db_session import SqlAlchemyBase
 
 
-assoc_white = sqlalchemy.Table(
-    'whites',
+assoc_black = sqlalchemy.Table(
+    'blacks',
     SqlAlchemyBase.metadata,
     sqlalchemy.Column('user_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('users.id')),
@@ -15,8 +15,8 @@ assoc_white = sqlalchemy.Table(
 )
 
 
-assoc_black = sqlalchemy.Table(
-    'blacks',
+assoc_white = sqlalchemy.Table(
+    'whites',
     SqlAlchemyBase.metadata,
     sqlalchemy.Column('user_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('users.id')),
@@ -35,5 +35,5 @@ class Game(SqlAlchemyBase, SerializerMixin):
     result = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     tour = orm.relationship('Tour')
-    # black = orm.relationship("User", secondary="blacks", backref="user_id")
-    # white = orm.relationship("User", secondary="whites", backref="user_id")
+    black = orm.relationship("User", secondary="blacks", backref="game_id")
+    white = orm.relationship("User", secondary="whites", backref="game_id")

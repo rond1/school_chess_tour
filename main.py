@@ -22,13 +22,6 @@ api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-with open('settings.json', encoding="utf8") as file:
-    settings = json.load(file)
-header = f'{settings["school"]}.'
-alt = settings["title"] + '. '
-alt += ', '.join(f' {settings["country"]} {settings["region"]} '
-                f'{settings["district"]} {settings["place"]}'.split())
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -38,7 +31,7 @@ def load_user(user_id):
 
 @app.route("/")
 def index():
-    return redirect('/tournament/all')
+    return redirect('/tournament')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -55,14 +48,9 @@ def reqister():
                                    form=form, alt=alt, header=header,
                                    message="Такой пользователь уже есть")
         user = User(
-            name=form.name.data,
+            fio=form.fio.data,
             email=form.email.data,
-            surname=form.surname.data,
-            midname=form.midname.data,
-            birthday=form.birthday.data,
-            is_female=bool(form.gender.data),
-            phone=form.phone.data,
-            telegram=form.telegram.data
+            is_female=bool(form.gender.data)
         )
         user.set_password(form.password.data)
         db_sess.add(user)
@@ -81,13 +69,13 @@ def login():
             if not user.is_activated and not user.is_admin:
                 return render_template('login.html',
                                        message="Пользователь не активирован, обратитесь к администратору",
-                                       title='Авторизация', form=form, alt=alt, header=header)
+                                       title='Авторизация', form=form)
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               title='Авторизация', form=form, alt=alt, header=header)
-    return render_template('login.html', title='Авторизация', form=form, alt=alt, header=header)
+                               title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/logout')
@@ -106,30 +94,14 @@ def main():
         db_sess.add(user_class)
         db_sess.commit()
         user = User()
-        user.user_class_id = 1
         user.is_admin = True
-        user.name = 'Админ'
-        user.surname = 'Админов'
-        user.birthday = datetime.date(2006, 11, 3)
+        user.fio = 'Админ'
         user.email = "admin@admin.ru"
         user.set_password('admin')
         db_sess.add(user)
         db_sess.commit()
-        game_type = GameType()
-        game_type.name = 'Шахматы. Классика'
-        db_sess.add(game_type)
-        db_sess.commit()
-        game_type = GameType()
-        game_type.name = 'Шахматы. Рапид'
-        db_sess.add(game_type)
-        db_sess.commit()
-        game_type = GameType()
-        game_type.name = 'Шахматы. Блиц'
-        db_sess.add(game_type)
-        db_sess.commit()
         tournament = Tournament()
         tournament.name = 'Новогодний турнир 2023-2024'
-        tournament.game_type_id = 1
         tournament.game_time = 120
         tournament.move_time = 30
         tournament.start = datetime.datetime(2023, 12, 30, 15, 0, 0)
@@ -137,22 +109,16 @@ def main():
         db_sess.commit()
         category = Category()
         category.tournament_id = 1
-        category.class_from = 1
-        category.class_to = 4
         category.gender = 1
         db_sess.add(category)
         db_sess.commit()
         category = Category()
         category.tournament_id = 1
-        category.class_from = 9
-        category.class_to = 11
         category.gender = -1
         db_sess.add(category)
         db_sess.commit()
     # для списка объектов
-    api.add_resource(tournament_resources.TournamentListResource, '/api/tournament/<filter>')
-
-    api.add_resource(game_type_resources.GameTypeListResource, '/api/gametype/')
+    api.add_resource(tournament_resources.TournamentListResource, '/api/tournament')
 
     # для одного объекта
     api.add_resource(tournament_resources.TournamentResource, '/api/tournament/<int:tournament_id>')
