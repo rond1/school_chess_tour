@@ -23,8 +23,11 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     group = orm.relationship('Group')
 
+    # b_games = orm.relationship("Game", secondary="blacks", backref="b_game_id")
+    # w_games = orm.relationship("Game", secondary="whites", backref="w_game_id")
+
     def __repr__(self):
-        return f"<User> {self.id} {self.login} {self.email}"
+        return f"<User> {self.id} {self.fio} {self.email}"
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

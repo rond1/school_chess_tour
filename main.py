@@ -1,12 +1,11 @@
 from flask import Flask, render_template, redirect
 import json
-from data import db_session, tournament_resources, tournament_view, game_type_resources
+from data import db_session, tournament_resources, tournament_view, \
+    category_resources, tour_resources, game_resources, group_resources, user_resources, category_view, tour_view
+from data.groups import Group
 from data.users import User
-from data.classes import Class
-from data.game_types import GameType
 from data.tournaments import Tournament
 from data.categories import Category
-from data.ranks import Rank
 from data.tours import Tour
 from data.games import Game
 import datetime
@@ -40,12 +39,12 @@ def reqister():
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
-                                   form=form, alt=alt, header=header,
+                                   form=form,
                                    message="Пароли не совпадают")
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
-                                   form=form, alt=alt, header=header,
+                                   form=form,
                                    message="Такой пользователь уже есть")
         user = User(
             fio=form.fio.data,
@@ -56,7 +55,7 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form, alt=alt, header=header)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -88,11 +87,7 @@ def logout():
 def main():
     db_session.global_init("db/school_chess_tour.db")
     db_sess = db_session.create_session()
-    if not db_sess.query(Class).all():
-        user_class = Class()
-        db_sess = db_session.create_session()
-        db_sess.add(user_class)
-        db_sess.commit()
+    if not db_sess.query(User).all():
         user = User()
         user.is_admin = True
         user.fio = 'Админ'
@@ -110,20 +105,33 @@ def main():
         category = Category()
         category.tournament_id = 1
         category.gender = 1
+        category.name = 'мальчики до 15'
         db_sess.add(category)
         db_sess.commit()
         category = Category()
         category.tournament_id = 1
+        category.name = 'девочки до 15'
         category.gender = -1
         db_sess.add(category)
         db_sess.commit()
     # для списка объектов
-    api.add_resource(tournament_resources.TournamentListResource, '/api/tournament')
+    api.add_resource(tournament_resources.TournamentListResource, '/api/tournament/')
+    api.add_resource(category_resources.CategoryListResource, '/api/category/')
+    api.add_resource(tour_resources.TourListResource, '/api/tour/')
+    api.add_resource(group_resources.GroupListResource, '/api/group/')
+    api.add_resource(user_resources.UserListResource, '/api/user/')
 
     # для одного объекта
     api.add_resource(tournament_resources.TournamentResource, '/api/tournament/<int:tournament_id>')
+    api.add_resource(category_resources.CategoryResource, '/api/category/<int:category_id>')
+    api.add_resource(tour_resources.TourResource, '/api/tour/<int:tour_id>')
+    api.add_resource(game_resources.GameResource, '/api/game/<int:game_id>')
+    api.add_resource(group_resources.GroupResource, '/api/group/<int:group_id>')
+    api.add_resource(user_resources.UserResource, '/api/user/<int:user_id>')
 
-    app.register_blueprint(tournament_view.blueprint)
+    app.register_blueprint(tournament_view.blueprint_tournament)
+    app.register_blueprint(category_view.blueprint_category)
+    app.register_blueprint(tour_view.blueprint_tour)
     app.run()
 
 

@@ -1,50 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+</br>
 <p>
-    Фильтр:&nbsp;
-    <a href="/tournament/all">
-        Все
-    </a>
-    &nbsp;
-    <a href="/tournament/arch">
-        Арх
-    </a>
-    &nbsp;
-    <a href="/tournament/active">
-        Тек
-    </a>
-    &nbsp;
     {% if current_user.is_authenticated and current_user.is_admin %}
-        <a href="/tournament/add/" class="btn btn-secondary">Добавить турнир</a>
+        <a href="/tournament/post/" class="btn btn-secondary">Добавить</a>
     {% endif %}
 </p>
-{% for tournament in tournaments%}
 
-<div class="col-md6 border rounded">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                   <a href="/tournament/{{ids[tournaments.index(tournament)][0]}}">
-                        {{tournament[0]}}
-                    </a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in tournament[1:]%}
-            <tr>
-                <td>
-                    <a href="/cat/{{ids[tournaments.index(tournament)][tournament.index(category)]}}">
-                        {{category}}
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-</br>
+{% for tournament in tournaments%}
+<p>
+    <h5>
+		<a href='/tournament/{{ids[tournaments.index(tournament)]}}'>
+            {{tournament[0]}}
+        </a>
+    </h5>
+</p>
 {% endfor %}
+
 {% endblock %}

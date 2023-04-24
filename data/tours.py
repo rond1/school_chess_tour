@@ -9,7 +9,7 @@ class Tour(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'tours'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
-    number = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
+    number = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     category_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("categories.id"))
     start = sqlalchemy.Column(sqlalchemy.DateTime, nullable=False)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)

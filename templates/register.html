@@ -32,36 +32,9 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.name.label }}<br>
-        {{ form.name(class="form-control") }}
-        {% for error in form.name.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.surname.label }}<br>
-        {{ form.surname(class="form-control") }}
-        {% for error in form.surname.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.midname.label }}<br>
-        {{ form.midname(class="form-control") }}
-        {% for error in form.surname.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.birthday.label }}<br>
-        {{ form.birthday(class="form-control") }}
-        {% for error in form.birthday.errors %}
+        {{ form.fio.label }}<br>
+        {{ form.fio(class="form-control") }}
+        {% for error in form.fio.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
@@ -71,24 +44,6 @@
         {{ form.gender.label }}<br>
         {{ form.gender(class="form-control") }}
         {% for error in form.gender.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.phone.label }}<br>
-        {{ form.phone(class="form-control") }}
-        {% for error in form.phone.errors %}
-            <p class="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.telegram.label }}<br>
-        {{ form.telegram(class="form-control") }}
-        {% for error in form.telegram.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>

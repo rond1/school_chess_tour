@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Добавление турнира</h1>
+<h1>{{ title }}</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <p>
@@ -35,15 +35,6 @@
         {{ form.start.label }}<br>
         {{ form.start(class="form-control") }}
         {% for error in form.start.errors %}
-            <p content="alert alert-danger" role="alert">
-                {{ error }}
-            </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.game_type_id.label }}<br>
-        {{ form.game_type_id(class="form-control") }}
-        {% for error in form.game_type_id.errors %}
             <p content="alert alert-danger" role="alert">
                 {{ error }}
             </p>

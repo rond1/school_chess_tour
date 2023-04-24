@@ -29,6 +29,7 @@ class Category(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True)
     tournament_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("tournaments.id"))
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=False)
 
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False, default=False)
     gender = sqlalchemy.Column(sqlalchemy.Integer, default=0)

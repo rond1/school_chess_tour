@@ -1,41 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<div class="col-md6 border rounded">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    {{tournament[0]}}
-                </th>
-            </tr>
-            <p>
-                {% if current_user.is_authenticated and current_user.is_admin %}
-                <a href="/tournament/{{ ids[0] }}/edit" class="btn btn-secondary">Изменить</a>
-            &nbsp;
-                <a href="/tournament/{{ ids[0] }}/delete" class="btn btn-secondary">Удалить</a>
-                {% endif %}
-            </p>
-
-        </thead>
-        <tbody>
-        {% for category in tournament[1:]%}
-            <tr>
-                <td>
-                    <a href="/cat/{{ ids[tournament.index(category)] }}">
-                        {{category}}
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+<p>
+    <h5>
+        {{tournament["bigname"]}}
+    </h5>
+</p>
+<p>
     {% if current_user.is_authenticated and current_user.is_admin %}
-    <a href="/category/add/" class="btn btn-secondary">Добавить</a>
+        <form action="{{ tournament['id'] }}/delete" class="form-inline" method="post">
+	        <a href="{{ tournament['id'] }}/put" class="btn btn-warning">Изменить</a>
+            &nbsp;
+            <input type="hidden" value=0>
+	        <input type="submit" value="Удалить" class="btn btn-danger">
+        </form>
     {% endif %}
-    {% if current_user.is_authenticated and not current_user.is_admin %}
-    <a href="" class="btn btn-secondary">Подать заявку</a>
+</p>
+{% if tournament["categories"] %}
+<p>
+    <h6>Категории</h6>
+</p>
+{% endif %}
+{% for category in tournament["categories"]%}
+<p>
+    <a href='/category/{{ category["id"] }}'>
+            {{ category["bigname"] }}
+    </a>
+</p>
+{% endfor %}
+{% if current_user.is_authenticated and current_user.is_admin %}
+<p>
+        <a href="/category/post/{{ tournament['id'] }}" class="btn btn-secondary">Добавить категорию</a>
+</p>
+{% endif %}
+
+{% if not current_user.is_admin and current_user.is_activated and not tournament['is_started'] %}
+<p>
+    {% if tournament['current_user'] > 0 %}
+        <form action="{{ tournament['id'] }}/demand" class="form-inline" method="post">
+	        <input type="submit" value="Подать заявку" class="btn btn-success">
+        </form>
+    {% else %}
+        <span>Вы уже подали заявку, чтобы отозвать её, обратитесь к администратору</span>
     {% endif %}
-</div>
+</p>
+{% endif %}
+{% if current_user.is_admin %}
+    {% for demand in tournament['demands'] %}
+<form action="{{ tournament['id'] }}/delete" class="form-inline" method="post">
+    <a href="/user/{{ demand['id'] }}">{{ demand['bigname'] }}</a>
+    &nbsp;
+    <input type="hidden" value="{{ demand['id'] }}">
+    <input type="submit" value="Удалить заявку" class="btn btn-danger">
+</form>
+<br>
+    {% endfor %}
+<form action="{{ tournament['id'] }}/participants" class="form-inline" method="post">
+    <input type="submit" value="Распределить участников по категориям" class="btn btn-success">
+</form>
+{% endif %}
 {% endblock %}

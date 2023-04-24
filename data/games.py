@@ -8,9 +8,9 @@ from .db_session import SqlAlchemyBase
 assoc_black = sqlalchemy.Table(
     'blacks',
     SqlAlchemyBase.metadata,
-    sqlalchemy.Column('user_id', sqlalchemy.Integer,
+    sqlalchemy.Column('b_user_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('users.id')),
-    sqlalchemy.Column('game_id', sqlalchemy.Integer,
+    sqlalchemy.Column('b_game_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('games.id'))
 )
 
@@ -18,9 +18,9 @@ assoc_black = sqlalchemy.Table(
 assoc_white = sqlalchemy.Table(
     'whites',
     SqlAlchemyBase.metadata,
-    sqlalchemy.Column('user_id', sqlalchemy.Integer,
+    sqlalchemy.Column('w_user_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('users.id')),
-    sqlalchemy.Column('game_id', sqlalchemy.Integer,
+    sqlalchemy.Column('w_game_id', sqlalchemy.Integer,
                       sqlalchemy.ForeignKey('games.id'))
 )
 
@@ -35,5 +35,5 @@ class Game(SqlAlchemyBase, SerializerMixin):
     result = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
 
     tour = orm.relationship('Tour')
-    black = orm.relationship("User", secondary="blacks", backref="game_id")
-    white = orm.relationship("User", secondary="whites", backref="game_id")
+    black = orm.relationship("User", secondary="blacks", backref="b_user_id")
+    white = orm.relationship("User", secondary="whites", backref="w_user_id")
