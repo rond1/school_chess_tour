@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect
 import json
 from data import db_session, tournament_resources, tournament_view, \
-    category_resources, tour_resources, game_resources, group_resources, user_resources, category_view, tour_view
+    category_resources, tour_resources, game_resources, group_resources, user_resources, category_view, tour_view, \
+    game_view, group_view, user_view
 from data.groups import Group
 from data.users import User
 from data.tournaments import Tournament
@@ -132,6 +133,9 @@ def main():
     app.register_blueprint(tournament_view.blueprint_tournament)
     app.register_blueprint(category_view.blueprint_category)
     app.register_blueprint(tour_view.blueprint_tour)
+    app.register_blueprint(game_view.blueprint_game)
+    app.register_blueprint(group_view.blueprint_group)
+    app.register_blueprint(user_view.blueprint_user)
     app.run()
 
 

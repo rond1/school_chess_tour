@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+{% for group in groups %}
+<p>
+    <a href="/group/{{ group['id'] }}/put/" class="btn btn-warning">Изменить</a>
+    {{ group['name'] }}
+</p>
+{% endfor %}
+<br>
+<p>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <a href="/group/post/" class="btn btn-secondary">Добавить группу</a>
+    {% endif %}
+</p>
+
+{% endblock %}

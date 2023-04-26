@@ -25,7 +25,7 @@ parser1.add_argument('salt', required=True)
 class UserListResource(Resource):
     def get(self):
         session = db_session.create_session()
-        users = session.query(User).all()
+        users = session.query(User).order_by(User.is_activated).all()
         users1 = []
         for user in users:
             user1 = user.to_dict(only=('id', 'fio', 'is_female', 'email', 'is_activated'))
@@ -76,7 +76,7 @@ class UserResource(Resource):
         session = db_session.create_session()
         user = session.query(User).get(user_id)
         user1 = user.to_dict(
-            only=('id', 'fio', 'is_female'))
+            only=('id', 'fio', 'is_female', 'email', 'group_id', 'is_activated'))
         if user.group is not None:
             user1['group'] = user.group.to_dict(only=('id', 'name'))
         w_games = session.query(Game).filter(Game.white.contains(user)).all()

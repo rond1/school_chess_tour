@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<br>
+{% for user in users %}
+<p>
+    <a href="/user/{{ user['id'] }}/put/" class="btn btn-warning">Изменить</a>
+    {{ user['bigname'] }}
+</p>
+{% endfor %}
+{% endblock %}

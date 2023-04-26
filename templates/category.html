@@ -12,7 +12,6 @@
 		{{ category['bigname'] }}
 	</h4>
 </p>
-
 {% if current_user.is_admin %}
 <p>
     <form action="/category/{{ category['id'] }}/delete/{{ category['tournament']['id'] }}" class="form-inline" method="post">
@@ -21,6 +20,16 @@
 	        <input type="submit" value="Удалить категорию" class="btn btn-danger">
     </form>
 </p>
+{% endif %}
+{% if category['show_participants'] < 2 %}
+	<p>
+		<h6>Участники:</h6>
+	</p>
+	{% for partic in category['participants'] %}
+	<p>{{ partic['bigname'] }}</p>
+	{% endfor %}
+{% endif %}
+{% if current_user.is_admin %}
 	{% if category['is_started'] %}
 		{% if not category['is_finished'] %}
 <p>
@@ -32,6 +41,20 @@
 </p>
 {% endif %}
 {% for tour in category['tours'] %}
-
+<p>
+	<h5>
+		{{ tour['bigname'] }}
+	</h5>
+</p>
+	{% for game in tour['games'] %}
+<p>
+		{{ game["white"]["bigname"] }}
+		&nbsp;
+		{{ game["result"] }}
+		&nbsp;
+		{{ game["black"]["bigname"] }}
+	<a href="/game/{{ game['id'] }}/put/{{ category['id'] }}" class="btn btn-success">Записать результат</a>
+</p>
+	{% endfor %}
 {% endfor %}
 {% endblock %}

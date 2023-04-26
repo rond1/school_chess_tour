@@ -4,7 +4,9 @@
 </br>
 <p>
     {% if current_user.is_authenticated and current_user.is_admin %}
-        <a href="/tournament/post/" class="btn btn-secondary">Добавить</a>
+        <a href="/tournament/post/" class="btn btn-secondary">Добавить турнир</a>
+        <a href="/group" class="btn btn-secondary">Группы</a>
+        <a href="/user" class="btn btn-secondary">Учащиеся</a>
     {% endif %}
 </p>
 

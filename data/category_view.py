@@ -47,7 +47,7 @@ def get_category(category_id):
     category1['tours'] = []
     for tour in category['tours']:
         tour1 = {}
-        bigname = f'Тур {tour["id"]}. '
+        bigname = ''
         if tour['number'] == 1:
             bigname += 'Финал. '
         else:
@@ -55,7 +55,32 @@ def get_category(category_id):
         bigname += f'Старт {tour["start"]}'
         tour1['bigname'] = bigname
         tour1['number'] = tour['number']
+        tour1['games'] = []
+        for game in tour['games']:
+            game1 = {}
+            game1['id'] = game['id']
+            game1['white'] = {}
+            game1['black'] = {}
+            bigname_w = f'{game["white"]["fio"]} {game["white"]["group"]["name"]}'
+            bigname_b = f'{game["black"]["fio"]} {game["black"]["group"]["name"]}'
+            game1['white']['bigname'] = bigname_w
+            game1['black']['bigname'] = bigname_b
+            if game['result'] is None:
+                game1['result'] = '     '
+            elif game['result'] == -1:
+                game1['result'] = '0 - 1'
+            else:
+                game1['result'] = '1 - 0'
+            game1['white']['id'] = game["white"]["id"]
+            game1['black']['id'] = game["black"]["id"]
+            tour1['games'].append(game1)
         category1['tours'].append(tour1)
+        category1['participants'] = []
+        for participant in category['participants']:
+            partic1 = {}
+            partic1['bigname'] = f'{participant["fio"]} {participant["group"]["name"]}'
+            category1['participants'].append(partic1)
+        category1['show_participants'] = len(category['tours'])
     return render_template("category.html", category=category1, title='Турнир')
 
 

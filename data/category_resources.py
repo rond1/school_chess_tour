@@ -59,19 +59,6 @@ class CategoryResource(Resource):
             only=('name', 'gender', 'is_finished'))
         category1['tournament'] = category.tournament.to_dict(
             only=('id', 'name', 'game_time', 'move_time', 'start', 'is_finished'))
-        tours = []
-        for tour in category.tours:
-            tour1 = tour.to_dict(
-                only=('id', 'number', 'category_id', 'start', 'is_finished'))
-            games = []
-            for game in games:
-                game1 = game.to_dict(only='result')
-                game1['white'] = game.white[0].to_dict(only=('id', 'fio', 'is_female'))
-                game1['black'] = game.black[0].to_dict(only=('id', 'fio', 'is_female'))
-                games.append(game1)
-            tour1['games'] = games
-            tours.append(tour1)
-        category1['tours'] = tours
         participants = []
         for participant in category.participants:
             participant1 = participant.to_dict(
@@ -79,6 +66,26 @@ class CategoryResource(Resource):
             participant1['group'] = participant.group.to_dict(only=('id', 'name'))
             participants.append(participant1)
         category1['participants'] = participants
+        tours = []
+        for tour in category.tours:
+            tour1 = tour.to_dict(
+                only=('id', 'number', 'category_id', 'start', 'is_finished'))
+            games = []
+            for game in tour.games:
+                game1 = {}
+                game1['id'] = game.id
+                game1['result'] = game.result
+                game1['white'] = game.white[0].to_dict(only=('id', 'fio', 'is_female'))
+                game1['black'] = game.black[0].to_dict(only=('id', 'fio', 'is_female'))
+                for partic in category1['participants']:
+                    if partic['id'] == game1['white']['id']:
+                        game1['white']['group'] = partic['group']
+                    elif partic['id'] == game1['black']['id']:
+                        game1['black']['group'] = partic['group']
+                games.append(game1)
+            tour1['games'] = games
+            tours.append(tour1)
+        category1['tours'] = tours
         groups = []
         for group in category.groups:
             group1 = group.to_dict(
