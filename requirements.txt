@@ -1,0 +1,12 @@
+sqlalchemy
+sqlalchemy_serializer
+flask
+flask_restful
+datetime
+flask_login
+requests
+math
+werkzeug.security
+flask_wtf
+wtforms
+hashlib

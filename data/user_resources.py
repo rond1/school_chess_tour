@@ -52,14 +52,6 @@ class UserListResource(Resource):
         session.commit()
         return jsonify({'success': 'OK'})
 
-    #     'fio': 'Саша Корепанова',
-    #     'email': 'sashka@kakashka',
-    #     'hashed_password': 'pbkdf2:sha256:260000$8QNQL7EEBqPJJ5o1$f003af919097bba8d0377a4e0fe0a14bcb4d771539acd29ddf6c17c46ded9c20',
-    #     'is_female': 1,
-    #     'group_id': 2,
-    #     'is_activated': True,
-    #     'salt': salt
-
 
 parser = reqparse.RequestParser()
 parser.add_argument('fio')

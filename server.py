@@ -1,14 +1,10 @@
 from flask import Flask, render_template, redirect
-import json
 from data import db_session, tournament_resources, tournament_view, \
     category_resources, tour_resources, game_resources, group_resources, user_resources, category_view, tour_view, \
     game_view, group_view, user_view
-from data.groups import Group
 from data.users import User
 from data.tournaments import Tournament
 from data.categories import Category
-from data.tours import Tour
-from data.games import Game
 import datetime
 from flask_login import LoginManager, login_user, login_required, logout_user
 

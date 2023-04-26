@@ -1,11 +1,8 @@
-import datetime
-
 from flask import jsonify
 from flask_restful import abort, Resource, reqparse
 
 from data import db_session
 from data.groups import Group
-from data.users import User
 from salt import salt
 
 
