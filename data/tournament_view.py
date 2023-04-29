@@ -72,8 +72,9 @@ def get_tournament(tournament_id):
     for demand in tournament['demands']:
         bigname = f'{demand["fio"]} {demand["group"]["name"]}'
         tournament1['demands'].append({'id': demand['id'], 'bigname': bigname})
-        if demand['id'] == current_user.id:
-            tournament1['current_user'] = 0
+        if current_user.is_authenticated:
+            if demand['id'] == current_user.id:
+                tournament1['current_user'] = 0
     return render_template("tournament.html", tournament=tournament1, title='Турнир')
 
 
