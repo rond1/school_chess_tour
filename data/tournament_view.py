@@ -36,7 +36,6 @@ def get_tournament_list():
 
 
 @blueprint_tournament.route('/tournament/<int:tournament_id>') # tournament/<int:id>
-@login_required
 def get_tournament(tournament_id):
     tournament = get(f'http://localhost:5000/api/tournament/{tournament_id}').json()
     tournament1 = {}
@@ -67,7 +66,9 @@ def get_tournament(tournament_id):
             names.append(group['name'])
         bigname += ', '.join(names)
         tournament1['categories'].append({'id': category['id'], 'bigname': bigname})
-    tournament1['current_user'] = current_user.id
+    tournament1['current_user'] = 0
+    if current_user.is_authenticated:
+        tournament1['current_user'] = current_user.id
     for demand in tournament['demands']:
         bigname = f'{demand["fio"]} {demand["group"]["name"]}'
         tournament1['demands'].append({'id': demand['id'], 'bigname': bigname})

@@ -44,7 +44,9 @@ def get_category(category_id):
     if datetime.datetime.now() > datetime.datetime.strptime(category['tournament']["start"], '%Y-%m-%d %H:%M:%S'):
         category1['is_started'] = True
     category1['tours'] = []
+    category1['show_participants'] = 0
     for tour in category['tours']:
+        category1['show_participants'] += 1
         tour1 = {}
         bigname = ''
         if tour['number'] == 1:
@@ -75,11 +77,10 @@ def get_category(category_id):
             tour1['games'].append(game1)
         category1['tours'].append(tour1)
         category1['participants'] = []
-        for participant in category['participants']:
-            partic1 = {}
-            partic1['bigname'] = f'{participant["fio"]} {participant["group"]["name"]}'
-            category1['participants'].append(partic1)
-        category1['show_participants'] = len(category['tours'])
+    for participant in category['participants']:
+        partic1 = {}
+        partic1['bigname'] = f'{participant["fio"]} {participant["group"]["name"]}'
+        category1['participants'].append(partic1)
     return render_template("category.html", category=category1, title='Турнир')
 
 

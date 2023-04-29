@@ -53,7 +53,9 @@
 		{{ game["result"] }}
 		&nbsp;
 		{{ game["black"]["bigname"] }}
-	<a href="/game/{{ game['id'] }}/put/{{ category['id'] }}" class="btn btn-success">Записать результат</a>
+	{% if current_user.is_admin %}
+		<a href="/game/{{ game['id'] }}/put/{{ category['id'] }}" class="btn btn-success">Записать результат</a>
+	{% endif %}
 </p>
 	{% endfor %}
 {% endfor %}

@@ -109,6 +109,7 @@ class UserResource(Resource):
         user.is_female = args['is_female']
         user.is_activated = args['is_activated']
         user.group_id = args['group_id']
-        user.set_password(args['password'])
+        if args['password'] is not None and args['password'] != '':
+            user.set_password(args['password'])
         session.commit()
         return jsonify({'success': 'OK'})
