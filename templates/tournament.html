@@ -11,7 +11,7 @@
         <form action="{{ tournament['id'] }}/delete" class="form-inline" method="post">
 	        <a href="{{ tournament['id'] }}/put" class="btn btn-warning">Изменить</a>
             &nbsp;
-            <input type="hidden" value=0>
+            <input type="hidden" value=0 name="user_id">
 	        <input type="submit" value="Удалить" class="btn btn-danger">
         </form>
     {% endif %}
@@ -50,7 +50,7 @@
 <form action="{{ tournament['id'] }}/delete" class="form-inline" method="post">
     <a href="/user/{{ demand['id'] }}">{{ demand['bigname'] }}</a>
     &nbsp;
-    <input type="hidden" value="{{ demand['id'] }}">
+    <input type="hidden" value="{{ demand['id'] }}" name="user_id">
     <input type="submit" value="Удалить заявку" class="btn btn-danger">
 </form>
 <br>
